@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI News Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="hero-card">
+      <div class="topline">LIVE AI NEWS DESK</div>
+      <h1>AI News Generator</h1>
+      <p class="subtitle">Turn a short headline into a polished news draft with a pre-trained HuggingFace DistilGPT-2 model.</p>
+
+      <div class="workflow-strip" aria-hidden="true">
+        <span>Headline</span>
+        <span>Generate</span>
+        <span>Read</span>
+        <span>Reset</span>
+      </div>
+
+      <p class="workflow-hint">Start by entering a headline or topic below.</p>
+
+      <div class="input-group">
+        <label for="headlineInput">News headline or topic</label>
+        <textarea id="headlineInput" rows="4" placeholder="Example: India launches a new artificial intelligence initiative"></textarea>
+      </div>
+
+      <div class="button-row">
+        <button id="generateBtn" class="primary-btn">Generate Article</button>
+        <button id="copyBtn" class="secondary-btn" type="button" disabled>Copy Article</button>
+        <button id="resetBtn" class="secondary-btn secondary-btn--ghost" type="button">Reset</button>
+      </div>
+      <p id="statusText" class="status-text" aria-live="polite"></p>
+      <p id="errorText" class="error-text" aria-live="assertive"></p>
+    </section>
+
+    <section class="output-card">
+      <div class="output-header">
+        <div>
+          <p class="section-label">Generated Output</p>
+          <h2>Newsroom Draft</h2>
+        </div>
+        <div id="loadingBadge" class="loading-badge" hidden>Generating</div>
+      </div>
+
+      <div id="outputBox" class="output-box output-empty">
+        <div class="empty-state">
+          <div class="empty-icon">AI</div>
+          <p class="empty-title">Your generated news article will appear here.</p>
+          <p class="empty-copy">Enter a headline, generate the article, and review the draft in this panel.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
