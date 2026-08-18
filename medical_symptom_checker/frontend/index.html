@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Symptom Checker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">+</div>
+          <div>
+            <h1>AI Symptom Checker</h1>
+            <p>Rule-based health reasoning assistant</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-card">
+        <section class="selector-panel">
+          <label for="symptom-search" class="input-label">Search symptoms...</label>
+          <div class="search-box">
+            <span class="search-icon">⌕</span>
+            <input id="symptom-search" type="text" placeholder="Search symptoms..." />
+          </div>
+
+          <div class="quick-select">
+            <p>Popular</p>
+            <div id="popular-symptoms" class="quick-buttons"></div>
+          </div>
+
+          <div class="selector-area">
+            <div class="available-header">
+              <h3>Symptom List</h3>
+              <span id="result-count" class="result-badge">0 selected</span>
+            </div>
+            <div id="symptom-options" class="symptom-grid"></div>
+          </div>
+
+          <div class="selected-section">
+            <div class="selected-header">
+              <h3>Selected symptoms</h3>
+            </div>
+            <div id="selected-symptoms" class="selected-chips empty-state">
+              No symptoms selected yet.
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button id="analyze-btn" class="primary-btn">Analyze Symptoms</button>
+            <button id="reset-btn" class="secondary-btn">Reset</button>
+          </div>
+        </section>
+
+        <section id="results-panel" class="results-panel hidden">
+          <div class="result-header">
+            <h2>Possible Condition</h2>
+          </div>
+          <div class="condition-box">
+            <h3 id="condition-name">—</h3>
+            <div id="match-indicator" class="match-indicator">Rule Match: 0 / 0 symptoms</div>
+          </div>
+
+          <div class="reasoning-box">
+            <p class="label-title">Reasoning</p>
+            <p id="reasoning-text">No analysis yet.</p>
+          </div>
+
+          <div id="other-results" class="other-results"></div>
+        </section>
+      </main>
+
+      <footer class="footer-note">
+        This is an educational rule-based demonstration and is not a medical diagnosis. Consult a qualified healthcare professional for medical advice.
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
