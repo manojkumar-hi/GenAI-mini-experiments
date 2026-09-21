@@ -6,13 +6,16 @@ import os
 from groq import Groq
 from dotenv import load_dotenv
 
-# Load API key from .env file
+# Load API key — supports both local .env and Streamlit Cloud Secrets
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = (
+    st.secrets.get("GROQ_API_KEY", None)        # Streamlit Cloud Secrets
+    or os.getenv("GROQ_API_KEY", None)           # local .env file
+)
 
 st.set_page_config(page_title="Learning Assistant", page_icon="🧠", layout="wide")
 
-# Initialise Groq client (only if key is set)
+# Initialise Groq client (only if a real key is present)
 groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY and GROQ_API_KEY != "paste_your_new_groq_key_here" else None
 
 # ---------------------------------------------------------------------------
