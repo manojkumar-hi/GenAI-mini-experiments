@@ -1,121 +1,175 @@
 import streamlit as st
 import memory
+import time
+import json
+import os
+
+st.set_page_config(page_title="Learning Assistant", page_icon="🧠", layout="wide")
+
+# Load Knowledge Base
+def load_kb():
+    kb_path = os.path.join(os.path.dirname(__file__), "knowledge_base.json")
+    if os.path.exists(kb_path):
+        with open(kb_path, "r") as f:
+            return json.load(f)
+    return {}
+
+KB = load_kb()
 
 def generate_response(question, style, recent_convos):
     q_lower = question.lower()
     
-    # Test 4: Handle style change via chat
+    # Check preferences
     if "change explanation style to" in q_lower:
         for s in ["Simple", "Detailed", "Example-based", "Exam-oriented"]:
             if s.lower() in q_lower:
                 memory.update_preferences(s)
-                # Need to update current style for this response
-                style = s
-                return f"I have updated your explanation style preference to {s}."
+                return f"I have updated your explanation style preference to {s}.", ""
                 
-    # Test 3: Check for "what did I ask earlier"
+    # Check what was asked earlier
     if "what did i ask earlier" in q_lower or "previous question" in q_lower:
         if not recent_convos:
-            return "You haven't asked anything yet."
+            return "You haven't asked anything yet.", ""
         last_q = recent_convos[-1]['question']
-        return f"Your previous question was: '{last_q}'."
+        return f"Your previous question was: '{last_q}'.", ""
     
-    # Test 2: Check for context references like "it"
     context_topic = ""
-    if " it " in q_lower or q_lower.startswith("it ") or q_lower.endswith(" it") or q_lower == "explain it in simple terms.":
-        if recent_convos:
-            last_q = recent_convos[-1]['question'].lower()
-            if "machine learning" in last_q:
-                context_topic = "machine learning"
-            elif "neural network" in last_q:
-                context_topic = "neural networks"
-            elif "cnn" in last_q:
-                context_topic = "cnn"
-                
-    # Combine question with context if referring to "it"
-    effective_topic = q_lower
-    if context_topic:
-        effective_topic = q_lower.replace("it", context_topic)
-        
-    # Basic knowledge base
-    response = ""
-    if "machine learning" in effective_topic:
-        if style == "Simple" or "simple terms" in q_lower:
-            response = "Machine Learning is teaching a computer to learn from examples instead of giving it strict rules."
-        elif style == "Detailed":
-            response = "Machine Learning is a subset of AI that uses statistical techniques to give computers the ability to 'learn' from data, without being explicitly programmed."
-        elif style == "Example-based":
-            response = "For example, instead of writing code to identify a cat, you show a machine learning model 1000 pictures of cats until it learns the pattern."
-        elif style == "Exam-oriented":
-            response = "Definition: Machine Learning is the study of computer algorithms that improve automatically through experience and by the use of data."
-            
-    elif "neural network" in effective_topic:
-        if style == "Simple":
-            response = "A neural network is a computer system inspired by how the human brain works."
-        elif style == "Detailed":
-            response = "Neural networks are computing systems inspired by the biological neural networks that constitute animal brains. They consist of layers of artificial neurons."
-        elif style == "Example-based":
-            response = "Imagine a committee of experts. Each expert looks at a part of a picture and passes their guess to the next level of experts, until a final decision is made."
-        elif style == "Exam-oriented":
-            response = "Key Point: A neural network consists of an input layer, one or more hidden layers, and an output layer, connected by weights that are adjusted during training."
-            
-    elif "cnn" in effective_topic:
-        response = f"[{style} mode] CNN (Convolutional Neural Network) is primarily used for image recognition and processing."
+    # Enhanced context resolution
+    # Check if question contains pronouns implying context
+    pronouns = [" it", " it ", " it.", " its", " its ", " its?", " they", " them"]
+    needs_context = any(p in q_lower for p in pronouns) or q_lower.startswith("it ") or q_lower.endswith(" it") or q_lower == "explain it in simple terms." or "simply" in q_lower
     
+    if needs_context and recent_convos:
+        # Look backwards to find the last known topic
+        for conv in reversed(recent_convos):
+            prev_q = conv['question'].lower()
+            # Sort topics by length descending to match longest phrases first
+            for topic in sorted(KB.keys(), key=len, reverse=True):
+                if topic in prev_q:
+                    context_topic = topic
+                    break
+            if context_topic:
+                break
+                
+    # Detect current topic if not using context
+    current_topic = ""
+    if not needs_context:
+        for topic in sorted(KB.keys(), key=len, reverse=True):
+            if topic in q_lower:
+                current_topic = topic
+                break
     else:
-        response = f"[{style} mode] I received your question: '{question}'. This is a simulated response demonstrating memory architecture."
+        current_topic = context_topic
         
-    if context_topic:
-         response = f"(Recalling previous context about {context_topic}...)\n" + response
-         
-    return response
+    # Generate response
+    response = ""
+    
+    if "types" in q_lower and current_topic and "Types" in KB[current_topic]:
+        response = KB[current_topic]["Types"]
+    elif current_topic:
+        # Allow user to implicitly override style in the chat
+        applied_style = style
+        if "simpl" in q_lower:
+            applied_style = "Simple"
+        elif "detail" in q_lower:
+            applied_style = "Detailed"
+        elif "example" in q_lower:
+            applied_style = "Example-based"
+        elif "exam" in q_lower:
+            applied_style = "Exam-oriented"
+            
+        response = KB[current_topic].get(applied_style, KB[current_topic]["Simple"])
+    else:
+        response = f"[{style} mode] I received your question: '{question}'. I don't have specific educational information about this topic in my knowledge base yet."
+        
+    # We only report context_topic if we actually used memory to resolve it
+    reported_context = context_topic if needs_context and context_topic else ""
+    return response, reported_context
 
-st.title("Personalized Learning Assistant")
-st.write("An adaptive agent that remembers your learning preferences and conversation context.")
 
-# Sidebar for preferences and memory management
-st.sidebar.header("Agent Memory Settings")
-current_style = memory.get_preferences()
+# Header
+st.title("🧠 Personalized Learning Assistant")
+st.subheader("An Adaptive Learning Agent with Memory")
+st.markdown("---")
 
-styles = ["Simple", "Detailed", "Example-based", "Exam-oriented"]
-style_index = styles.index(current_style) if current_style in styles else 0
+# Sidebar
+with st.sidebar:
+    st.header("⚙️ Agent Memory")
+    
+    # Memory Status
+    st.success("🟢 Active")
+    
+    # Explanation Style Preference
+    st.markdown("### Explanation Style")
+    current_style = memory.get_preferences()
+    styles = ["Simple", "Detailed", "Example-based", "Exam-oriented"]
+    style_index = styles.index(current_style) if current_style in styles else 0
+    new_style = st.selectbox("Select Preference", styles, index=style_index, label_visibility="collapsed")
+    
+    if new_style != current_style:
+        memory.update_preferences(new_style)
+        st.success(f"Preference updated to: {new_style}")
+        st.rerun()
+        
+    # Previous Topics
+    st.markdown("### Previous Topics")
+    convos = memory.get_recent_conversations(limit=10)
+    topics = []
+    
+    # Use KB to extract previous topics beautifully
+    for c in convos:
+        q = c["question"].lower()
+        for topic in sorted(KB.keys(), key=len, reverse=True):
+            if topic in q and topic.title() not in topics:
+                topics.append(topic.title())
+                
+    if topics:
+        for t in topics:
+            st.markdown(f"• {t}")
+    else:
+        st.markdown("*No topics yet.*")
+        
+    st.markdown("---")
+    st.info("💡 **How memory works:**\nThe agent stores your style preferences and conversation history in `memory.json`. It retrieves this context to answer follow-up questions intelligently.")
+    
+    # Clear Memory
+    if st.button("🗑️ Clear Memory", use_container_width=True):
+        memory.clear_memory()
+        st.success("Memory cleared!")
+        st.rerun()
 
-new_style = st.sidebar.selectbox("Explanation Style", styles, index=style_index)
-
-if new_style != current_style:
-    memory.update_preferences(new_style)
-    st.sidebar.success(f"Preference updated to: {new_style}")
-    st.rerun()
-
-if st.sidebar.button("Clear Memory"):
-    memory.clear_memory()
-    st.sidebar.success("Memory cleared!")
-    st.rerun()
+# Main Chat Area
+st.markdown("### Conversation")
 
 # Display conversation history
-st.header("Conversation")
-convos = memory.get_recent_conversations(limit=10)
 for c in convos:
-    st.chat_message("user").write(c["question"])
-    st.chat_message("assistant").write(c["answer"])
+    with st.chat_message("user"):
+        st.write(c["question"])
+    with st.chat_message("assistant"):
+        st.write(c["answer"])
 
 # Chat input
-if question := st.chat_input("Ask a question..."):
+if question := st.chat_input("Ask your learning question..."):
     # Display user question
-    st.chat_message("user").write(question)
+    with st.chat_message("user"):
+        st.write(question)
     
     # Retrieve relevant memory context
     recent_convos = memory.get_recent_conversations(limit=3)
     pref_style = memory.get_preferences()
     
     # Generate response
-    answer = generate_response(question, pref_style, recent_convos)
+    answer, context_topic = generate_response(question, pref_style, recent_convos)
     
     # Display assistant response
-    st.chat_message("assistant").write(answer)
+    with st.chat_message("assistant"):
+        if context_topic:
+            st.info(f"**🧠 Memory Retrieved**\n\nPrevious context about **{context_topic.title()}** was used to answer this question.")
+        st.write(answer)
     
     # Store in memory
     memory.add_memory(question, answer)
     
-    # Rerun to update history appropriately
+    # Small delay for UX and rerun to refresh state
+    time.sleep(0.5)
     st.rerun()

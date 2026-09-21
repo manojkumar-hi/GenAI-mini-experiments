@@ -1,0 +1,135 @@
+{
+  "machine learning": {
+    "Simple": "Machine Learning is teaching a computer to learn from examples instead of giving it strict rules.",
+    "Detailed": "Machine Learning is a subset of AI that uses statistical techniques to give computers the ability to 'learn' from data, without being explicitly programmed.",
+    "Example-based": "For example, instead of writing code to identify a cat, you show a machine learning model 1000 pictures of cats until it learns the pattern.",
+    "Exam-oriented": "Definition: Machine Learning is the study of computer algorithms that improve automatically through experience and by the use of data.",
+    "Types": "The main types of machine learning are Supervised Learning, Unsupervised Learning, and Reinforcement Learning."
+  },
+  "supervised learning": {
+    "Simple": "Supervised learning is like learning with a teacher. You give the computer questions and the correct answers, so it learns how to answer new questions.",
+    "Detailed": "Supervised learning is a machine learning paradigm where the model is trained on a labeled dataset, meaning that each training example is paired with an output label.",
+    "Example-based": "For example, predicting house prices based on size and location, where you train the model using past data of houses and their actual selling prices.",
+    "Exam-oriented": "Key Concept: Supervised learning maps an input to an output based on example input-output pairs inferred from labeled training data.",
+    "Types": "The two main types are Classification (predicting categories) and Regression (predicting continuous values)."
+  },
+  "unsupervised learning": {
+    "Simple": "Unsupervised learning is when you give a computer data without any labels, and let it find patterns or groups on its own.",
+    "Detailed": "Unsupervised learning is a type of machine learning algorithm used to draw inferences from datasets consisting of input data without labeled responses. The most common method is cluster analysis.",
+    "Example-based": "Imagine giving a child a large bucket of mixed coins. Without telling them what the coins are, they naturally sort them by color or size. That's unsupervised learning.",
+    "Exam-oriented": "Key Concept: Unsupervised learning infers the natural structure present within a set of data points without providing explicit target outputs.",
+    "Types": "The main types include Clustering (e.g., K-Means), Association Rules, and Dimensionality Reduction (e.g., PCA)."
+  },
+  "reinforcement learning": {
+    "Simple": "Reinforcement learning is like training a dog. You give the computer a reward when it does something right, and a penalty when it makes a mistake.",
+    "Detailed": "Reinforcement learning is an area of machine learning concerned with how intelligent agents ought to take actions in an environment in order to maximize the notion of cumulative reward.",
+    "Example-based": "For example, an AI learning to play chess. It tries random moves, loses, gets a negative reward, and eventually learns the winning strategies through trial and error.",
+    "Exam-oriented": "Definition: RL is the training of machine learning models to make a sequence of decisions by maximizing a reward signal in a specified environment.",
+    "Types": "Main approaches include Value-based (Q-learning), Policy-based, and Model-based reinforcement learning."
+  },
+  "neural networks": {
+    "Simple": "A neural network is a computer system inspired by how the human brain works.",
+    "Detailed": "Neural networks are computing systems inspired by the biological neural networks that constitute animal brains. They consist of interconnected layers of artificial neurons.",
+    "Example-based": "Imagine a committee of experts. Each expert looks at a part of a picture and passes their guess to the next level of experts, until a final decision is made.",
+    "Exam-oriented": "Key Point: A neural network consists of an input layer, one or more hidden layers, and an output layer, connected by weights that are adjusted during training via backpropagation.",
+    "Types": "Common types include Feedforward Neural Networks, CNNs (for images), and RNNs (for sequences)."
+  },
+  "cnn": {
+    "Simple": "A CNN is a special type of neural network that is really good at looking at pictures and understanding what is in them.",
+    "Detailed": "Convolutional Neural Networks (CNNs) are a class of deep neural networks, most commonly applied to analyzing visual imagery through the use of convolutional filters.",
+    "Example-based": "When Facebook automatically tags your face in a photo, it is using a CNN to detect facial features like your eyes and nose.",
+    "Exam-oriented": "Definition: A CNN uses convolutional layers to automatically and adaptively learn spatial hierarchies of features from input images.",
+    "Types": "Famous CNN architectures include LeNet, AlexNet, VGG, ResNet, and YOLO."
+  },
+  "rnn": {
+    "Simple": "An RNN is a neural network that has a memory. It reads things in order, like reading a sentence word by word.",
+    "Detailed": "Recurrent Neural Networks (RNNs) are a class of artificial neural networks where connections between nodes can create a cycle, allowing output from some nodes to affect subsequent input to the same nodes.",
+    "Example-based": "When your phone's keyboard predicts the next word you are going to type, it uses an RNN to remember the sequence of words you just typed.",
+    "Exam-oriented": "Key Concept: RNNs process sequential data by maintaining a hidden state that captures information about previous inputs in the sequence.",
+    "Types": "Variations include standard RNNs, LSTMs, and GRUs."
+  },
+  "lstm": {
+    "Simple": "An LSTM is a smarter version of an RNN. It can remember important things for a long time and forget things that don't matter.",
+    "Detailed": "Long Short-Term Memory (LSTM) is an artificial recurrent neural network architecture capable of learning long-term dependencies, solving the vanishing gradient problem in standard RNNs.",
+    "Example-based": "If you read a book and remember a character introduced in chapter 1 when they reappear in chapter 10, that's like an LSTM preserving long-term context.",
+    "Exam-oriented": "Definition: LSTMs utilize gating mechanisms (input, forget, and output gates) to regulate the flow of information and maintain long-term states.",
+    "Types": "Standard LSTM, Peephole LSTM, and Bidirectional LSTM."
+  },
+  "deep learning": {
+    "Simple": "Deep learning is a type of machine learning that uses huge neural networks with many layers to solve very complex problems.",
+    "Detailed": "Deep learning is part of a broader family of machine learning methods based on artificial neural networks with multiple layers (hence 'deep').",
+    "Example-based": "Self-driving cars use deep learning to process massive amounts of video data in real-time to distinguish between a pedestrian, a stop sign, and a shadow.",
+    "Exam-oriented": "Key Concept: Deep learning algorithms automatically extract multi-level feature representations from raw data using deep neural network architectures.",
+    "Types": "Includes deep neural networks, deep belief networks, recurrent neural networks, and convolutional neural networks."
+  },
+  "classification": {
+    "Simple": "Classification is a task where the computer sorts data into specific categories or groups.",
+    "Detailed": "In machine learning, classification is the problem of identifying which of a set of categories a new observation belongs to, based on a training set of data containing observations whose category membership is known.",
+    "Example-based": "An email spam filter is a classic classification model. It looks at an incoming email and categorizes it as either 'Spam' or 'Not Spam'.",
+    "Exam-oriented": "Definition: Classification is a supervised learning approach in which the target variable is discrete (categorical).",
+    "Types": "Binary classification, Multi-class classification, and Multi-label classification."
+  },
+  "regression": {
+    "Simple": "Regression is when a computer predicts an exact number, like a price or a temperature.",
+    "Detailed": "Regression analysis is a set of statistical processes for estimating the relationships between a dependent variable (often called the 'outcome') and one or more independent variables (features).",
+    "Example-based": "Using regression, a weather app can predict tomorrow's exact temperature to be 24.5 degrees based on historical weather patterns.",
+    "Exam-oriented": "Definition: Regression is a supervised learning task where the objective is to predict a continuous numerical output value.",
+    "Types": "Linear regression, Polynomial regression, Ridge regression, and Lasso regression."
+  },
+  "clustering": {
+    "Simple": "Clustering is grouping similar things together without knowing what the groups are beforehand.",
+    "Detailed": "Clustering is the task of dividing the population or data points into a number of groups such that data points in the same groups are more similar to other data points in the same group than those in other groups.",
+    "Example-based": "A streaming service clusters users based on their watching habits to recommend new movies, even if they never explicitly stated their genre preferences.",
+    "Exam-oriented": "Key Concept: Clustering is the primary method of unsupervised learning, aiming to find inherent structures in unlabeled data.",
+    "Types": "K-Means clustering, Hierarchical clustering, and DBSCAN."
+  },
+  "overfitting": {
+    "Simple": "Overfitting is when a computer memorizes the exact answers to a test but doesn't actually understand the subject, so it fails on new questions.",
+    "Detailed": "Overfitting occurs when a statistical model or machine learning algorithm captures the noise of the data rather than the underlying pattern, resulting in high accuracy on training data but poor generalization to unseen data.",
+    "Example-based": "If a student memorizes the exact answers to a practice exam but fails the real exam because the questions were slightly different, they have 'overfitted' to the practice exam.",
+    "Exam-oriented": "Definition: Overfitting is characterized by low bias and high variance, where the model performs exceptionally well on training data but poorly on validation/test data.",
+    "Types": "Not applicable."
+  },
+  "underfitting": {
+    "Simple": "Underfitting is when a computer hasn't learned enough to even answer the practice questions correctly.",
+    "Detailed": "Underfitting occurs when a machine learning model is too simple to capture the underlying structure of the data, leading to poor performance on both the training and testing datasets.",
+    "Example-based": "Trying to fit a straight line through data points that form a distinct curve is an example of underfitting.",
+    "Exam-oriented": "Key Concept: Underfitting is characterized by high bias and low variance, failing to accurately model the training data.",
+    "Types": "Not applicable."
+  },
+  "data leakage": {
+    "Simple": "Data leakage is a mistake where you accidentally give the computer the answers to a test before it actually takes the test.",
+    "Detailed": "Data leakage happens when information from outside the training dataset is used to create the model, leading to overly optimistic performance estimates during training that fail in real-world production.",
+    "Example-based": "If you are predicting whether a patient has a disease, and your training data includes a column 'Received Surgery for Disease X', that's data leakage.",
+    "Exam-oriented": "Definition: Data leakage is the unauthorized use of data in the model training process that would not be available at the time of prediction, invalidating the model's evaluation metrics.",
+    "Types": "Target leakage and Train-test contamination."
+  },
+  "dbms": {
+    "Simple": "A DBMS is a software system used to safely store, organize, and manage large amounts of data.",
+    "Detailed": "A Database Management System (DBMS) is system software for creating and managing databases. It provides users and programmers with a systematic way to create, retrieve, update and manage data.",
+    "Example-based": "MySQL and Oracle are examples of a DBMS. When you log into a website, a DBMS checks your username and password against a securely stored database.",
+    "Exam-oriented": "Definition: A DBMS serves as an interface between an end-user and a database, ensuring that data is consistently organized and remains easily accessible.",
+    "Types": "Relational (RDBMS), NoSQL, Hierarchical, and Network DBMS."
+  },
+  "normalization": {
+    "Simple": "Normalization is a way to organize data in a database so that it isn't repeated unnecessarily.",
+    "Detailed": "Database normalization is the process of structuring a relational database in accordance with a series of so-called normal forms in order to reduce data redundancy and improve data integrity.",
+    "Example-based": "Instead of writing a customer's address on every single order they make, you store the address once in a 'Customers' table and just link to it in the 'Orders' table.",
+    "Exam-oriented": "Key Concept: Normalization minimizes redundancy and dependency by organizing fields and table of a database systematically into Normal Forms (1NF, 2NF, 3NF, BCNF).",
+    "Types": "First Normal Form (1NF), Second Normal Form (2NF), Third Normal Form (3NF), and Boyce-Codd Normal Form (BCNF)."
+  },
+  "primary key": {
+    "Simple": "A primary key is a unique ID given to each item in a database, like a student ID number.",
+    "Detailed": "A primary key is a specific choice of a minimal set of attributes (columns) that uniquely specify a tuple (row) in a relation (table).",
+    "Example-based": "In a table of citizens, the Social Security Number (SSN) serves as a primary key because no two people have the exact same SSN.",
+    "Exam-oriented": "Definition: A primary key constraint uniquely identifies each record in a database table. It must contain UNIQUE values, and cannot contain NULL values.",
+    "Types": "Natural key and Surrogate key."
+  },
+  "foreign key": {
+    "Simple": "A foreign key is a link that connects data in one table to data in another table.",
+    "Detailed": "A foreign key is a set of attributes in a table that refers to the primary key of another table. The foreign key links these two tables together.",
+    "Example-based": "In an 'Orders' table, there might be a column for 'CustomerID'. This 'CustomerID' is a foreign key that links to the primary key in the 'Customers' table.",
+    "Exam-oriented": "Key Concept: A foreign key constraint maintains referential integrity between two tables by ensuring that the value in a column matches a value in the referenced primary key column.",
+    "Types": "Not applicable."
+  }
+}
