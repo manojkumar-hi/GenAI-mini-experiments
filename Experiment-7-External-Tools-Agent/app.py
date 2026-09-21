@@ -8,16 +8,12 @@ def agent_process(query):
     query_lower = query.lower()
     
     # 1. EMI Tool
-    if "emi" in query_lower:
-        numbers = re.findall(r"[\d\.]+", query)
-        if len(numbers) >= 3:
-            p, r, y = numbers[0], numbers[1], numbers[2]
-            return "EMI Calculator", tools.calculate_emi(p, r, y)
-        return "EMI Calculator", {"error": "Could not extract principal, rate, and years from the query."}
+    if any(kw in query_lower for kw in ["emi", "loan", "pay monthly"]):
+        return "EMI Calculator", tools.parse_and_calculate_emi(query)
         
     # 2. Calculator Tool
     elif "calculate " in query_lower and any(op in query_lower for op in ['+', '-', '*', '/']):
-        expr_match = re.search(r'calculate\s+([0-9\.\s\+\-\*\/]+)', query_lower)
+        expr_match = re.search(r'calculate\s+(.+)', query_lower)
         if expr_match:
             expr = expr_match.group(1).strip()
             return "Calculator", tools.calculate(expr)
@@ -79,7 +75,7 @@ with st.sidebar:
     if st.button("💳 Calculate EMI"):
         st.session_state.prompt_override = "Calculate EMI for 500000 at 8.5% for 5 years."
     if st.button("🧮 Calculator"):
-        st.session_state.prompt_override = "Calculate 25 * 48."
+        st.session_state.prompt_override = "Calculate (4500 + 2750) * 3 / 5."
     if st.button("📈 Stock Price"):
         st.session_state.prompt_override = "What is the current stock price of Apple?"
     if st.button("🏢 Company Info"):
@@ -115,9 +111,21 @@ if prompt:
             st.info(f"**🔧 Tool Selected**\n\n{tool_name}")
             
         if tool_data.get("error"):
-            # If API fails or unknown tool
             error_msg = tool_data["error"]
-            if "unavailable" in error_msg.lower() or "reach" in error_msg.lower():
+            
+            # Format EMI missing parameter error nicely
+            if tool_name == "EMI Calculator" and "more information" in error_msg:
+                st.warning(error_msg)
+                
+                # Show extracted context
+                p = tool_data.get('principal', '❓')
+                r = f"{tool_data['rate']}%" if tool_data.get('rate') else '❓'
+                y = tool_data.get('years', '❓')
+                st.caption(f"**Extracted so far:** Principal: {p} | Rate: {r} | Years: {y}")
+                
+                st.session_state.messages.append({"role": "assistant", "content": f"⚠️ {error_msg}\n*(Principal: {p}, Rate: {r}, Years: {y})*"})
+            
+            elif "unavailable" in error_msg.lower() or "reach" in error_msg.lower():
                 st.warning("⚠️ The external financial-data service could not be reached right now.")
                 st.session_state.messages.append({"role": "assistant", "content": "⚠️ The external financial-data service could not be reached right now."})
             else:
