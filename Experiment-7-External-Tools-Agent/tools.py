@@ -2,6 +2,25 @@ import re
 import operator
 import yfinance as yf
 
+COMPANY_TICKER_MAP = {
+    "apple": "AAPL",
+    "reliance industries": "RELIANCE.NS",
+    "reliance": "RELIANCE.NS",
+    "tata consultancy services": "TCS.NS",
+    "tcs": "TCS.NS",
+    "infosys": "INFY.NS",
+    "infy": "INFY.NS"
+}
+
+def resolve_ticker(query):
+    """Resolves a company name in a natural language query to its stock ticker."""
+    query_lower = query.lower()
+    # Sort keys by length descending to match "reliance industries" before "reliance"
+    for company in sorted(COMPANY_TICKER_MAP.keys(), key=len, reverse=True):
+        if company in query_lower:
+            return COMPANY_TICKER_MAP[company]
+    return None
+
 def calculate_emi(principal, annual_rate, duration_years):
     try:
         p = float(principal)
@@ -45,22 +64,11 @@ def calculate(expression):
 
 def get_stock_price(symbol):
     try:
-        indian_stocks = ['RELIANCE', 'TCS', 'INFY']
-        if symbol.upper() in indian_stocks:
-            symbol = symbol.upper() + '.NS'
-            
         ticker = yf.Ticker(symbol)
         history = ticker.history(period="1d")
         
         if history.empty:
-            if not symbol.endswith('.NS'):
-                ticker = yf.Ticker(symbol + ".NS")
-                history = ticker.history(period="1d")
-                if history.empty:
-                    return {"error": f"Could not retrieve price for {symbol}. It might be invalid or delisted."}
-                symbol = symbol + ".NS"
-            else:
-                return {"error": f"Could not retrieve price for {symbol}."}
+            return {"error": f"Could not retrieve price for {symbol}. It might be invalid or delisted."}
         
         last_price = history['Close'].iloc[-1]
         currency = "Rs." if symbol.endswith(".NS") or symbol.endswith(".BO") else "$"
@@ -70,22 +78,11 @@ def get_stock_price(symbol):
 
 def get_financial_information(symbol):
     try:
-        indian_stocks = ['RELIANCE', 'TCS', 'INFY']
-        if symbol.upper() in indian_stocks:
-            symbol = symbol.upper() + '.NS'
-            
         ticker = yf.Ticker(symbol)
         info = ticker.info
         
         if 'shortName' not in info and 'longName' not in info:
-             if not symbol.endswith('.NS'):
-                ticker = yf.Ticker(symbol + ".NS")
-                info = ticker.info
-                if 'shortName' not in info and 'longName' not in info:
-                    return {"error": f"Could not retrieve information for {symbol}."}
-                symbol = symbol + ".NS"
-             else:
-                 return {"error": f"Could not retrieve info for {symbol}."}
+             return {"error": f"Could not retrieve information for {symbol}."}
              
         name = info.get('shortName', info.get('longName', 'Unknown'))
         industry = info.get('industry', 'Unknown')

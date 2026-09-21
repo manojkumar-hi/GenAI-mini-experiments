@@ -25,18 +25,18 @@ def agent_process(query):
 
     # 3. Stock Price Tool
     elif "price" in query_lower or "stock" in query_lower:
-        words = query.replace('?', '').replace('.', '').split()
-        symbol = words[-1].upper()
-        return "Stock Price", tools.get_stock_price(symbol)
+        symbol = tools.resolve_ticker(query)
+        if symbol:
+            return "Stock Price", tools.get_stock_price(symbol)
+        return "Stock Price", {"error": "Could not identify a supported company ticker from the query."}
         
     # 4. Financial Information Tool
-    elif "financial information" in query_lower or "info" in query_lower:
-        words = query.replace('?', '').replace('.', '').split()
-        symbol = words[-1].upper()
-        return "Financial Information", tools.get_financial_information(symbol)
+    elif any(keyword in query_lower for keyword in ["financial information", "info", "about", "company"]):
+        symbol = tools.resolve_ticker(query)
+        if symbol:
+            return "Financial Information", tools.get_financial_information(symbol)
         
-    else:
-         return "Unknown", {"error": "I couldn't identify a suitable financial tool for that request."}
+    return "Unknown", {"error": "I couldn't identify a suitable financial tool for that request."}
 
 # Initialize session state for chat history
 if "messages" not in st.session_state:
@@ -81,9 +81,9 @@ with st.sidebar:
     if st.button("🧮 Calculator"):
         st.session_state.prompt_override = "Calculate 25 * 48."
     if st.button("📈 Stock Price"):
-        st.session_state.prompt_override = "What is the current price of RELIANCE?"
+        st.session_state.prompt_override = "What is the current stock price of Apple?"
     if st.button("🏢 Company Info"):
-        st.session_state.prompt_override = "Give me financial information about TCS."
+        st.session_state.prompt_override = "Give me financial information about Reliance Industries."
 
 # Check for quick action override
 prompt = st.chat_input("Enter a financial or calculation request...")
@@ -149,11 +149,7 @@ if prompt:
                     st.write(f"**Current Price:** {tool_data['current_price']}")
                     st.write(f"**Market Cap:** {tool_data['market_cap']}")
                     
-            # Save raw representation to history so it persists across reruns (Streamlit native Markdown)
-            # We don't save the UI components themselves to session state, just a string representation
-            # Actually, to make history look identical, we can save the markdown.
-            # But the requirement doesn't strictly need history to be styled the exact same way, just "Display previous conversation messages."
-            # For simplicity, we just save a summary of what the agent said to the chat.
+            # Save raw representation to history so it persists across reruns
             if tool_name == "EMI Calculator":
                 summary = f"**🔧 Tool Selected:** {tool_name}\n\n**Monthly EMI:** {tool_data['emi']}\n*(Principal: {tool_data['principal']}, Rate: {tool_data['rate']}%, Years: {tool_data['years']})*"
             elif tool_name == "Calculator":
