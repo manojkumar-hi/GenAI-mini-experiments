@@ -5,13 +5,18 @@ import json
 import os
 from groq import Groq
 from dotenv import load_dotenv
+from agent import AgentRuntime
 
 # Load API key — supports both local .env and Streamlit Cloud Secrets
 load_dotenv()
-GROQ_API_KEY = (
-    st.secrets.get("GROQ_API_KEY", None)        # Streamlit Cloud Secrets
-    or os.getenv("GROQ_API_KEY", None)           # local .env file
-)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", None)
+if not GROQ_API_KEY:
+    try:
+        GROQ_API_KEY = st.secrets.get("GROQ_API_KEY", None)
+    except FileNotFoundError:
+        pass
+    except Exception:
+        pass
 
 st.set_page_config(page_title="Learning Assistant", page_icon="🧠", layout="wide")
 
@@ -34,8 +39,8 @@ def build_messages(question, style, recent_convos):
         "Do not add unnecessary disclaimers or hedging.\n"
         "If the user refers to 'it', 'that', 'they', or any pronoun, "
         "look at the conversation history to identify the topic and answer about it directly.\n"
-        "If asked something you cannot do (like real-time data), say so in one short sentence "
-        "and immediately offer what you CAN help with."
+        "You have access to tools that can fetch real-time data like current time and weather. "
+        "Always use these tools when appropriate instead of claiming you cannot access real-time information."
     )
 
     messages = [{"role": "system", "content": system_prompt}]
@@ -78,13 +83,8 @@ def generate_response(question, style, recent_convos):
     if groq_client:
         try:
             messages = build_messages(question, style, recent_convos)
-            completion = groq_client.chat.completions.create(
-                model="openai/gpt-oss-20b",
-                messages=messages,
-                max_tokens=500,
-                temperature=0.6,
-            )
-            answer = completion.choices[0].message.content.strip()
+            runtime = AgentRuntime(client=groq_client, model="openai/gpt-oss-120b")
+            answer = runtime.run(messages)
             return answer, ""          # LLM handles context — no manual topic needed
         except Exception as e:
             # Graceful fallback message if API call fails
@@ -106,7 +106,7 @@ st.title("🧠 Personalized Learning Assistant")
 st.subheader("An Adaptive Learning Agent with Memory")
 
 if groq_client:
-    st.success("🟢 Groq LLM Connected — openai/gpt-oss-20b")
+    st.success("🟢 Groq LLM Connected — openai/gpt-oss-120b")
 else:
     st.warning("⚠️ Groq API key not configured. Add it to `.env` → `GROQ_API_KEY=...`")
 
